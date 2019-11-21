@@ -4,6 +4,8 @@ import Navbar from "./components/Navbar/Navbar";
 import { Layout } from "antd";
 import "./App.css";
 import Reunion from "./components/Reunion/Reunion";
+import Login from "./components/Login/Login";
+import GestionCollaborateurs from "./components/GestionCollaborateurs/GestionCollaborateurs";
 
 const App: React.FC = () => {
   const { Header, Footer, Content } = Layout;
@@ -17,7 +19,9 @@ const App: React.FC = () => {
       <Content>
         <Router>
           <Switch>
+            <Route exact path="/login" component={Login} />
             <Route exact path="/" component={Reunion} />
+            <Route exact path="/gestionCollaborateurs" component={GestionCollaborateurs} />
           </Switch>
         </Router>
       </Content>
