@@ -1,8 +1,22 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Row, Col, Select, Card, Button } from "antd";
+import { url } from "../../utils/api";
+import { IProjet } from "../../interfaces/IProjet";
 import "./Reunion.css";
+
 const Reunion: React.FC = () => {
   const { Option } = Select;
+  const [listeProjet, setListeProjet] = useState<IProjet[]>([]);
+
+  const loadProjet = () => {
+    axios.get(`${url}/projets`).then(e => {
+      setListeProjet(e.data);
+    });
+  };
+  useEffect(() => {
+    loadProjet();
+  }, []);
 
   return (
     <div>
@@ -16,9 +30,9 @@ const Reunion: React.FC = () => {
                 className="selectProjet"
                 placeholder="Sélectionner un projet"
               >
-                <Option value="jack">Jack</Option>
-                <Option value="lucy">Lucy</Option>
-                <Option value="tom">Tom</Option>
+                {listeProjet.map(e => {
+                  return <Option value={e.id}>{e.libelle}</Option>;
+                })}
               </Select>
             </h1>
           </Col>
