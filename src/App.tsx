@@ -7,22 +7,23 @@ import Reunion from "./components/Reunion/Reunion";
 
 const App: React.FC = () => {
   const { Header, Footer, Content } = Layout;
+
   return (
     <div className="App">
       <Layout>
         <Header>
-          <Navbar />
+          {window.location.href.match("/(login)/") == null && <Navbar />}
         </Header>
       </Layout>
       <Content>
         <Router>
           <Switch>
-            <Route exact path="/" component={Reunion} />
+            <Route path="/reunion" component={Reunion} />
           </Switch>
         </Router>
       </Content>
-      <Footer>
-        <p>Footer</p>
+      <Footer className="footer">
+        <p className="footerText">Raphael M, Louis B, Arthur P, Benjmain P</p>
       </Footer>
     </div>
   );
