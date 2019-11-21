@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useState }  from "react";
 import { Row, Col, Select, Card, Button } from "antd";
+import ModalAddReunion from "../ModalAddReunion/ModalAddReunion";
 import "./Reunion.css";
 const Reunion: React.FC = () => {
   const { Option } = Select;
-
+  const [visibleModalAdd,setVisibleModalAdd] = useState(false);
+  const showModalAdd = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    setVisibleModalAdd(true);
+  }
+  const hideModalAdd = () => {
+    setVisibleModalAdd(false);
+  }
   return (
     <div>
       <div>
@@ -30,6 +37,7 @@ const Reunion: React.FC = () => {
                 type="primary"
                 shape="circle"
                 icon="plus"
+                onClick={showModalAdd}
               />
             </p>
           </Col>
@@ -43,7 +51,7 @@ const Reunion: React.FC = () => {
             <Card className="reunionCard" size="small" title="Réunion : ">
               <p>Date : 19/03/2019</p>
               <p>Objectif : Virer martine de la compta</p>
-              <p>Participant : Eude et Jaque</p>
+              <p>Participant : Eude et Jacques</p>
             </Card>
           </div>
         </Col>
@@ -58,6 +66,7 @@ const Reunion: React.FC = () => {
           </div>
         </Col>
       </Row>
+      <ModalAddReunion visible={visibleModalAdd} setVisible={hideModalAdd} />
     </div>
   );
 };
