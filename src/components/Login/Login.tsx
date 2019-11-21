@@ -17,7 +17,7 @@ const Login: React.FC = () => {
         
         }
         );*/
-        document.location.replace("/toto");
+        document.location.replace("/");
     };
 
     const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
