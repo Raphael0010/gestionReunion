@@ -1,7 +1,11 @@
 import React, { useState }  from "react";
 import { Row, Col, Select, Card, Button } from "antd";
 import ModalAddReunion from "../ModalAddReunion/ModalAddReunion";
+import axios from "axios";
+import { url } from "../../utils/api";
+import { IProjet } from "../../interfaces/IProjet";
 import "./Reunion.css";
+
 const Reunion: React.FC = () => {
   const { Option } = Select;
   const [visibleModalAdd,setVisibleModalAdd] = useState(false);
@@ -11,6 +15,17 @@ const Reunion: React.FC = () => {
   const hideModalAdd = () => {
     setVisibleModalAdd(false);
   }
+  const [listeProjet, setListeProjet] = useState<IProjet[]>([]);
+
+  const loadProjet = () => {
+    axios.get(`${url}/projets`).then(e => {
+      setListeProjet(e.data);
+    });
+  };
+  useEffect(() => {
+    loadProjet();
+  }, []);
+
   return (
     <div>
       <div>
@@ -23,9 +38,9 @@ const Reunion: React.FC = () => {
                 className="selectProjet"
                 placeholder="Sélectionner un projet"
               >
-                <Option value="jack">Jack</Option>
-                <Option value="lucy">Lucy</Option>
-                <Option value="tom">Tom</Option>
+                {listeProjet.map(e => {
+                  return <Option value={e.id}>{e.libelle}</Option>;
+                })}
               </Select>
             </h1>
           </Col>

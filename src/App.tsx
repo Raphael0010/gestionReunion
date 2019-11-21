@@ -21,7 +21,11 @@ const App: React.FC = () => {
         <Router>
           <Switch>
             <Route exact path="/" component={Login} />
-            <Route exact path="/gestionCollaborateurs" component={GestionCollaborateurs} />
+            <Route
+              exact
+              path="/gestionCollaborateurs"
+              component={GestionCollaborateurs}
+            />
             <Route path="/reunion" component={Reunion} />
           </Switch>
         </Router>

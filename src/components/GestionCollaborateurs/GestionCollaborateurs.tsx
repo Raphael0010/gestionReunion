@@ -1,98 +1,102 @@
-import React, { useState } from "react";
-import {Table, Button, Popconfirm, Form, Divider, Tag, Input } from "antd";
-import { Redirect, useHistory } from "react-router-dom";
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { ICollabo } from "../../interfaces/ICollabo";
+import { Table, Popconfirm, Input } from "antd";
 import "./GestionCollaborateurs.css";
 
-
 const GestionCollaborateurs: React.FC = () => {
-    
-    const [currentId,setCurrentId] = useState(0);
-    const onChangeCurrentId = (value:any) => {
-      console.log(currentId);
-    }
+  const { Column } = Table;
+  const Search = Input.Search;
 
-    const confirm = () => {
-      /*axios.post('api/login', { id })
-      .then((result) => {
-        // Reload le state
+  const [dataSource, setDataSource] = useState<ICollabo[]>([]);
+  const [dataSourceFilter, setDataSourceFilter] = useState<ICollabo[]>([]);
+  const [filter, setFilter] = useState("");
+
+  const onChangeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(event.target.value);
+    if (filter.trim() === "") {
+      loadData();
+      return;
+    }
+    setDataSource(
+      dataSourceFilter.filter(e =>
+        e.name.toLowerCase().includes(filter.toLowerCase())
+      )
+    );
+  };
+
+  const loadData = () => {
+    setDataSource([
+      {
+        key: "1",
+        name: "John doe",
+        job: "Chef de projet"
+      },
+      {
+        key: "2",
+        name: "Jim Green",
+        job: "Développeur"
+      },
+      {
+        key: "3",
+        name: "Joe Travolta",
+        job: "Comptable"
       }
-      );*/
-    }
+    ]);
+    setDataSourceFilter([
+      {
+        key: "1",
+        name: "John doe",
+        job: "Chef de projet"
+      },
+      {
+        key: "2",
+        name: "Jim Green",
+        job: "Développeur"
+      },
+      {
+        key: "3",
+        name: "Joe Travolta",
+        job: "Comptable"
+      }
+    ]);
+  };
 
-    const columns = [
-        {
-          title: 'Prénom',
-          dataIndex: 'fname',
-          key: 'fname',
-          render: (text:any) => <a>{text}</a>,
-        },
-        {
-          title: 'Nom',
-          dataIndex: 'lname',
-          key: 'lname',
-        },
-        {
-          title: 'Métier',
-          dataIndex: 'job',
-          key: 'job',
-        },
-        {
-          title: '',
-          key: 'action',
-          render: (text:string, record:any) => (
-         
+  const deleteCollabo = (key: any) => {
+    console.log("Je délete le :", key);
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  return (
+    <div>
+      <Search
+        placeholder="Rechercher..."
+        onChange={onChangeFilter}
+        style={{ width: 200 }}
+        value={filter}
+      />
+      <Table pagination={false} dataSource={dataSource}>
+        <Column title="Collaborateur" dataIndex="name" key="name" />
+        <Column title="Poste" dataIndex="job" key="job" />
+        <Column
+          title="Action"
+          key="action"
+          render={(text, record: any) => (
             <span>
-              {setCurrentId(record.key)}
-              <Button>Modifier</Button>
-              &nbsp;&nbsp;
-              <Popconfirm placement="top" title={"Confirmer la suppression"} onConfirm={confirm} okText="Oui" cancelText="Non">
-                <Button onClick={onChangeCurrentId}>Supprimer</Button>
+              <Popconfirm
+                title="Etes vous sûr ?"
+                onConfirm={() => deleteCollabo(record.key)}
+              >
+                <a>Supprimer</a>
               </Popconfirm>
             </span>
-          ),
-        },
-      ];
-
-      let data = [
-        {
-          key: '1',
-          fname: 'John',
-          lname: 'Brown',
-          job: 'Chef de projet'
-        },
-        {
-          key: '2',
-          fname: 'Jim',
-          lname: 'Green',
-          job: 'Développeur'
-        },
-        {
-          key: '3',
-          fname: 'Joe',
-          lname: 'Black',
-          job: 'Comptable'
-        }
-      ];
-
-      const Search = Input.Search;
-      const [filter,setFilter] = useState("");
-      const onChangeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFilter(event.target.value);
-
-      }
-
-    return (
-      <div>
-        <Search
-          placeholder="Rechercher..."
-          onChange={onChangeFilter}
-          style={{ width: 200 }}
-          value={filter}
+          )}
         />
-        <Table columns={columns} dataSource={data} pagination={false}/> 
-      </div>
-    );
+      </Table>
+    </div>
+  );
 };
 
 export default GestionCollaborateurs;
