@@ -2,3 +2,11 @@
   background: white;
   padding: 0;
 }
+
+.footerText {
+  text-align: center;
+}
+
+.footer {
+  background: white;
+}

@@ -9,24 +9,25 @@ import GestionCollaborateurs from "./components/GestionCollaborateurs/GestionCol
 
 const App: React.FC = () => {
   const { Header, Footer, Content } = Layout;
+
   return (
     <div className="App">
       <Layout>
         <Header>
-          <Navbar />
+          {window.location.href.match("/(login)/") == null && <Navbar />}
         </Header>
       </Layout>
       <Content>
         <Router>
           <Switch>
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/" component={Reunion} />
+            <Route exact path="/" component={Login} />
             <Route exact path="/gestionCollaborateurs" component={GestionCollaborateurs} />
+            <Route path="/reunion" component={Reunion} />
           </Switch>
         </Router>
       </Content>
-      <Footer>
-        <p>Footer</p>
+      <Footer className="footer">
+        <p className="footerText">Raphael M, Louis B, Arthur P, Benjmain P</p>
       </Footer>
     </div>
   );
