@@ -1,23 +1,15 @@
-import React, { useState, useEffect } from "react";
-import {Button,Select,Input,Modal,DatePicker,TimePicker} from "antd";
-import { Redirect, useHistory } from "react-router-dom";
-import { url } from "../../utils/api";
-import axios from 'axios';
-import moment from 'moment';
-import { IProjet } from "../../interfaces/IProjet";
-import { ICollabo } from "../../interfaces/ICollabo";
-import { IOption } from "../../interfaces/IOption";
+import React, { useState } from "react";
+import { Button, Input, Modal } from "antd";
 
 interface Props {
-    visible : boolean;
-    setVisible : (value: boolean) => void;
+  visible: boolean;
+  setVisible: (value: boolean) => void;
 }
 
-const MailSender: React.FC<Props> = ({visible,setVisible}) => {
+const MailSender: React.FC<Props> = ({ visible, setVisible }) => {
+  const [status, setStatus] = useState("");
 
-  const [status,setStatus] = useState("");
-
-  const submitForm = (ev : any) => {
+  const submitForm = (ev: any) => {
     ev.preventDefault();
     const form = ev.target;
     const data = new FormData(form);
@@ -34,19 +26,19 @@ const MailSender: React.FC<Props> = ({visible,setVisible}) => {
       }
     };
     xhr.send(data);
-  }
+  };
 
   const handleCancel = () => {
     setVisible(false);
-}
+  };
 
   return (
-  <div>
+    <div>
       <Modal
-          title="Envoyer un rappel"
-          visible={visible}
-          onCancel={handleCancel}
-          footer={null}
+        title="Envoyer un rappel"
+        visible={visible}
+        onCancel={handleCancel}
+        footer={null}
       >
         <form
           onSubmit={submitForm}
@@ -54,13 +46,15 @@ const MailSender: React.FC<Props> = ({visible,setVisible}) => {
           method="POST"
         >
           <Input type="email" name="email" placeholder="email" />
-          <br/><br/>
-          <Input type="text" name="message" defaultValue="Rappel de réunion"/>
-          <br/><br/>
+          <br />
+          <br />
+          <Input type="text" name="message" defaultValue="Rappel de réunion" />
+          <br />
+          <br />
           <Button htmlType="submit">Envoyer</Button>
         </form>
       </Modal>
-  </div>
+    </div>
   );
 };
 

@@ -10,18 +10,17 @@ import MailSender from "../MailSender/MailSender";
 
 const Reunion: React.FC = () => {
   const { Option } = Select;
-  const [visibleModalAdd,setVisibleModalAdd] = useState(false);
-  const [visibleModalMailSender,setVisibleModalMailSender] = useState(false);
+  const [visibleModalAdd, setVisibleModalAdd] = useState(false);
+  const [visibleModalMailSender, setVisibleModalMailSender] = useState(false);
   const [listeProjet, setListeProjet] = useState<IProjet[]>([]);
   const [reunionAVenir, setReunionAvenir] = useState<IReunion[]>([]);
   const [reunionPasse, setReunionPasse] = useState<IReunion[]>([]);
 
-  const showModalMailSender = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const showModalMailSender = (
+    event: React.MouseEvent<HTMLElement, MouseEvent>
+  ) => {
     setVisibleModalMailSender(true);
-  }
-  const hideModalMailSender = () => {
-    setVisibleModalMailSender(false);
-  }
+  };
 
   const loadProjet = () => {
     axios.get(`${url}/projets`).then(e => {
@@ -31,9 +30,6 @@ const Reunion: React.FC = () => {
 
   const showModalAdd = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setVisibleModalAdd(true);
-  };
-  const hideModalAdd = () => {
-    setVisibleModalAdd(false);
   };
 
   const loadReunion = (id: number) => {
@@ -195,8 +191,14 @@ const Reunion: React.FC = () => {
         icon="mail"
         onClick={showModalMailSender}
       />
-      <ModalAddReunion visible={visibleModalAdd}  setVisible={setVisibleModalAdd}/>
-      <MailSender visible={visibleModalMailSender}  setVisible={setVisibleModalMailSender} />
+      <ModalAddReunion
+        visible={visibleModalAdd}
+        setVisible={setVisibleModalAdd}
+      />
+      <MailSender
+        visible={visibleModalMailSender}
+        setVisible={setVisibleModalMailSender}
+      />
     </div>
   );
 };
