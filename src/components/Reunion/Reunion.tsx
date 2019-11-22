@@ -6,6 +6,7 @@ import axios from "axios";
 import { url } from "../../utils/api";
 import { IProjet } from "../../interfaces/IProjet";
 import "./Reunion.css";
+import { IReunion } from "../../interfaces/IReunion";
 
 const Reunion: React.FC = () => {
   const { Option } = Select;
@@ -17,12 +18,25 @@ const Reunion: React.FC = () => {
     setVisibleModalAdd(false);
   }
   const [listeProjet, setListeProjet] = useState<IProjet[]>([]);
+  const [reunionAVenir, setReunionAvenir] = useState<IReunion[]>([]);
+  const [reunionPasse, setReunionPasse] = useState<IReunion[]>([]);
 
   const loadProjet = () => {
     axios.get(`${url}/projets`).then(e => {
       setListeProjet(e.data);
     });
   };
+
+  const loadReunion = (id: number) => {
+    axios.get(`${url}/reunions/reunion/${id}`).then(e => {
+      console.log(e.data);
+    });
+  };
+
+  const onChangeProjet = (e: any) => {
+    loadReunion(parseInt(e));
+  };
+
   useEffect(() => {
     loadProjet();
   }, []);
@@ -38,10 +52,11 @@ const Reunion: React.FC = () => {
                 showSearch
                 className="selectProjet"
                 placeholder="Sélectionner un projet"
+                onSelect={onChangeProjet}
               >
-                {listeProjet.map(e => {
-                  return <Option value={e.id}>{e.libelle}</Option>;
-                })}
+                {listeProjet.map(e => (
+                  <Option key={e.id}>{e.libelle}</Option>
+                ))}
               </Select>
             </h1>
           </Col>
@@ -64,21 +79,27 @@ const Reunion: React.FC = () => {
         <Col span={12}>
           <div className="reunionBloc">
             <h2 className="center">Réunion à venir</h2>
-            <Card className="reunionCard" size="small" title="Réunion : ">
-              <p>Date : 19/03/2019</p>
-              <p>Objectif : Virer martine de la compta</p>
-              <p>Participant : Eude et Jacques</p>
-            </Card>
+            {reunionAVenir &&
+              reunionAVenir.map(e => (
+                <Card className="reunionCard" size="small" title="Réunion : ">
+                  <p>Date : ${e.date}</p>
+                  <p>Objectif : ${e.objectif}</p>
+                  <p>Participant : ${e.participant.map(u => u.name)}</p>
+                </Card>
+              ))}
           </div>
         </Col>
         <Col span={12}>
           <div className="reunionBloc">
-            <h2 className="center">Réunion passée(s)</h2>
-            <Card className="reunionCard" size="small" title="Réunion : ">
-              <p>Date : 30/01/2019</p>
-              <p>Objectif : Conquérir le monde</p>
-              <p>Participant : Louis</p>
-            </Card>
+            <h2 className="center">Réunion passée</h2>
+            {reunionPasse.length > 0 &&
+              reunionPasse.map(e => (
+                <Card className="reunionCard" size="small" title="Réunion : ">
+                  <p>Date : ${e.date}</p>
+                  <p>Objectif : ${e.objectif}</p>
+                  <p>Participant : ${e.participant.map(u => u.name)}</p>
+                </Card>
+              ))}
           </div>
         </Col>
       </Row>
