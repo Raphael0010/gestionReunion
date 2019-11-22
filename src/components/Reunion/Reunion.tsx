@@ -6,15 +6,18 @@ import { IProjet } from "../../interfaces/IProjet";
 import "./Reunion.css";
 import { IReunion } from "../../interfaces/IReunion";
 import ModalAddReunion from "../ModalAddReunion/ModalAddReunion";
+import ModalEditReunion from "../ModalUpdateReunion/ModalUpdateReunion";
 import MailSender from "../MailSender/MailSender";
 
 const Reunion: React.FC = () => {
   const { Option } = Select;
   const [visibleModalAdd, setVisibleModalAdd] = useState(false);
+  const [visibleModalEdit, setVisibleModalEdit] = useState(false);
   const [visibleModalMailSender, setVisibleModalMailSender] = useState(false);
   const [listeProjet, setListeProjet] = useState<IProjet[]>([]);
   const [reunionAVenir, setReunionAvenir] = useState<IReunion[]>([]);
   const [reunionPasse, setReunionPasse] = useState<IReunion[]>([]);
+  const [activeId,setActiveId] = useState(0);
 
   const showModalMailSender = (
     event: React.MouseEvent<HTMLElement, MouseEvent>
@@ -30,6 +33,11 @@ const Reunion: React.FC = () => {
 
   const showModalAdd = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setVisibleModalAdd(true);
+  };
+
+  const showModalEdit = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    setActiveId(parseInt(event.currentTarget.id));
+    setVisibleModalEdit(true);
   };
 
   const loadReunion = (id: number) => {
@@ -92,7 +100,7 @@ const Reunion: React.FC = () => {
 
   useEffect(() => {
     loadProjet();
-  }, []);
+  }, [visibleModalAdd]);
 
   return (
     <div>
@@ -171,6 +179,8 @@ const Reunion: React.FC = () => {
                       shape="circle"
                       icon="edit"
                       size="large"
+                      id={`${e.id}`}
+                      onClick={showModalEdit}
                     />
                   }
                 >
@@ -198,6 +208,11 @@ const Reunion: React.FC = () => {
       <MailSender
         visible={visibleModalMailSender}
         setVisible={setVisibleModalMailSender}
+      />
+      <ModalEditReunion
+        id="0"
+        visible={visibleModalEdit}
+        setVisible={setVisibleModalEdit}
       />
     </div>
   );

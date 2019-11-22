@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Select, Input, Modal, DatePicker, TimePicker } from "antd";
+import { Button, Select, Input, Modal, DatePicker, TimePicker, message } from "antd";
 import { url } from "../../utils/api";
 import axios from "axios";
 import moment from "moment";
@@ -76,7 +76,8 @@ const ModalAddReunion: React.FC<Props> = ({ visible, setVisible }) => {
         projet: projet
       })
       .then(e => {
-        console.log(e);
+        message.success("Votre réunion à été ajouté");
+        setVisible(false);
       });
   };
   const handleCancel = () => {
@@ -103,10 +104,6 @@ const ModalAddReunion: React.FC<Props> = ({ visible, setVisible }) => {
           </div>
         }
       >
-        <Input placeholder="Nom" onChange={onChangeNom} />
-        <br />
-        <br />
-
         <Input placeholder="Nom" onChange={onChangeNom} />
         <br />
         <br />
