@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Button, Select, Input, Modal } from "antd";
+import { Button, Select, Input, Modal, message } from "antd";
 import { url } from "../../utils/api";
 import axios from "axios";
 import { IProjet } from "../../interfaces/IProjet";
-import { IOption } from "../../interfaces/IOption";
 
 interface Props {
   visible: boolean;
@@ -18,7 +17,6 @@ const ModalAddCollabo: React.FC<Props> = ({ visible, setVisible }) => {
   const [poste, setPoste] = useState(0);
   const [listePoste, setListePoste] = useState<IProjet[]>([]);
   const [motDePasse, setMotDePasse] = useState("");
-  const [optionCollabo, setOptionCollabo] = useState<IOption[]>([]);
   const [email, setEmail] = useState("");
 
   const onChangePrenom = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,11 +33,6 @@ const ModalAddCollabo: React.FC<Props> = ({ visible, setVisible }) => {
   };
   const onChangeMotDePasse = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMotDePasse(event.target.value);
-  };
-  const onSetOptionCollabo = (o: IOption) => {
-    let optionCollab = optionCollabo;
-    optionCollab.push(o);
-    setOptionCollabo(optionCollab);
   };
 
   const loadPoste = () => {
@@ -58,7 +51,10 @@ const ModalAddCollabo: React.FC<Props> = ({ visible, setVisible }) => {
         mail: email
       })
       .then(e => {
-        console.log(e);
+        if (e.data) {
+          message.success("Collaborateur ajouté");
+          setVisible(false);
+        }
       });
   };
 
