@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { ICollabo } from "../../interfaces/ICollabo";
-import { Table, Popconfirm, Input, Col, Button, Modal } from "antd";
-import { url } from "../../utils/api";
-import axios from 'axios';
-import ModalAddCollabo from "../ModalAddCollabo/ModalAddCollabo";
+import axios from "axios";
+import { Table, Popconfirm, Input, Button } from "antd";
 import "./GestionCollaborateurs.css";
+import { url } from "../../utils/api";
+import ModalAddCollabo from "../ModalAddCollabo/ModalAddCollabo";
 
 const GestionCollaborateurs: React.FC = () => {
   const { Column } = Table;
@@ -35,40 +35,18 @@ const GestionCollaborateurs: React.FC = () => {
   };
 
   const loadData = () => {
-    setDataSource([
-      {
-        key: "1",
-        name: "John doe",
-        job: "Chef de projet"
-      },
-      {
-        key: "2",
-        name: "Jim Green",
-        job: "Développeur"
-      },
-      {
-        key: "3",
-        name: "Joe Travolta",
-        job: "Comptable"
-      }
-    ]);
-    setDataSourceFilter([
-      {
-        key: "1",
-        name: "John doe",
-        job: "Chef de projet"
-      },
-      {
-        key: "2",
-        name: "Jim Green",
-        job: "Développeur"
-      },
-      {
-        key: "3",
-        name: "Joe Travolta",
-        job: "Comptable"
-      }
-    ]);
+    axios.get(`${url}/collaborateurs`).then(e => {
+      const dataCollabo: ICollabo[] = [];
+      e.data.map((e: any) => {
+        dataCollabo.push({
+          key: e.id,
+          name: e.name,
+          job: e.job
+        });
+      });
+      setDataSource(dataCollabo);
+      setDataSourceFilter(dataCollabo);
+    });
   };
 
   const deleteCollabo = (key: any) => {
