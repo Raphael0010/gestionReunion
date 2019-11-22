@@ -1,20 +1,22 @@
 import React, { useState } from "react";
-import { Button, Icon, Input, Modal } from "antd";
+import { Button, Icon, Input, Modal, Alert } from "antd";
 import "./Login.css";
+import { testLogin } from "../../utils/login";
 
 const Login: React.FC = () => {
   const [visibleModal] = useState(true);
   const [email, setEmail] = useState("");
+  const [loginBack, setLoginBack] = useState("");
   const [password, setPassword] = useState("");
 
-  const login = () => {
-    /*axios.post('api/login', { email, password })
-        .then((result) => {
-        
-        }
-        );*/
-    console.log(email, password);
-    document.location.replace("/reunion");
+  const login = async () => {
+    setLoginBack("");
+    const user = await testLogin(email, password);
+    if (user) {
+      document.location.replace("/reunion");
+    } else {
+      setLoginBack("Email ou mot de passe incorrect");
+    }
   };
 
   const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,6 +36,13 @@ const Login: React.FC = () => {
         mask={false}
         closable={false}
       >
+        {loginBack && (
+          <Alert
+            style={{ marginBottom: "4%" }}
+            message={loginBack}
+            type="error"
+          />
+        )}
         <Input
           prefix={<Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />}
           placeholder=" Email"

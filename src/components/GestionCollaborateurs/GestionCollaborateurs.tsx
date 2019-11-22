@@ -71,19 +71,22 @@ const GestionCollaborateurs: React.FC = () => {
 
   return (
     <div>
-      <Search
-        placeholder="Rechercher..."
-        onChange={onChangeFilter}
-        style={{ width: 200 }}
-        value={filter}
-      />
+      <div style={{ width: "100%", textAlign: "center" }}>
+        <Search
+          className="searchBar"
+          placeholder="Rechercher..."
+          onChange={onChangeFilter}
+          value={filter}
+        />
+      </div>
+
       <Table pagination={false} dataSource={dataSource}>
         <Column title="Collaborateur" dataIndex="name" key="name" />
         <Column title="Poste" dataIndex="job" key="job" />
         <Column
           title="Action"
           key="action"
-          render={(text, record: any) => (
+          render={(record: any) => (
             <span>
               <Popconfirm
                 title="Etes vous sûr ?"

@@ -1,39 +1,49 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect
+} from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import { Layout } from "antd";
 import "./App.css";
 import Reunion from "./components/Reunion/Reunion";
 import Login from "./components/Login/Login";
+import { createBrowserHistory } from "history";
 import GestionCollaborateurs from "./components/GestionCollaborateurs/GestionCollaborateurs";
 
 const App: React.FC = () => {
   const { Header, Footer, Content } = Layout;
+  const history = createBrowserHistory();
 
   return (
-    <div className="App">
+    <Router>
       <Layout>
-        <Header>
-          {window.location.href.match("/(login)/") == null && <Navbar />}
-        </Header>
+        <Header>{history.location.pathname !== "/login" && <Navbar />}</Header>
       </Layout>
       <Content>
-        <Router>
-          <Switch>
-            <Route exact path="/" component={Login} />
-            <Route
-              exact
-              path="/gestionCollaborateurs"
-              component={GestionCollaborateurs}
-            />
-            <Route path="/reunion" component={Reunion} />
-          </Switch>
-        </Router>
+        <Switch>
+          <Route exact path="/">
+            <Redirect to="/login" />
+          </Route>
+          <Route exact path="/login" component={Login} />
+          <Route
+            exact
+            path="/gestionCollaborateurs"
+            component={GestionCollaborateurs}
+          />
+          <Route exact path="/reunion" component={Reunion} />
+        </Switch>
       </Content>
       <Footer className="footer">
-        <p className="footerText">Raphael M, Louis B, Arthur P, Benjmain P</p>
+        {history.location.pathname !== "/login" && (
+          <p className="footerText">
+            Raphael M, Louis B, Arthur P, Benjamin P, Yoann PJ
+          </p>
+        )}
       </Footer>
-    </div>
+    </Router>
   );
 };
 
