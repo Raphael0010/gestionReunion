@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Select, Card, Button, Icon } from "antd";
+import { Row, Col, Select, Card, Button, Icon, Alert } from "antd";
 import axios from "axios";
 import { url } from "../../utils/api";
 import { IProjet } from "../../interfaces/IProjet";
@@ -17,7 +17,7 @@ const Reunion: React.FC = () => {
   const [listeProjet, setListeProjet] = useState<IProjet[]>([]);
   const [reunionAVenir, setReunionAvenir] = useState<IReunion[]>([]);
   const [reunionPasse, setReunionPasse] = useState<IReunion[]>([]);
-  const [activeId,setActiveId] = useState(0);
+  const [activeId, setActiveId] = useState(0);
 
   const showModalMailSender = (
     event: React.MouseEvent<HTMLElement, MouseEvent>
@@ -123,9 +123,17 @@ const Reunion: React.FC = () => {
           </Col>
           <Col span={12}>
             <p className="addReunion">
+              Envoyer un rappel
+              <Button
+                style={{ marginLeft: "2%", marginRight: "5%" }}
+                type="primary"
+                shape="circle"
+                icon="mail"
+                onClick={showModalMailSender}
+              />
               Créer une réunion
               <Button
-                style={{ marginLeft: "5%" }}
+                style={{ marginLeft: "2%" }}
                 type="primary"
                 shape="circle"
                 icon="plus"
@@ -151,7 +159,10 @@ const Reunion: React.FC = () => {
                 >
                   {e.compteRendu === null && (
                     <p>
-                      <Icon type="warning" /> Pas de compte rendu
+                      <Alert
+                        message="Vous n'avez pas rédigé de compte-rendu"
+                        type="warning"
+                      />
                     </p>
                   )}
                   <p>Date : {new Date(e.date).toDateString()}</p>
@@ -175,15 +186,21 @@ const Reunion: React.FC = () => {
                   key={`${e.id}`}
                   extra={
                     <Button
-                      type="primary"
-                      shape="circle"
-                      icon="edit"
-                      size="large"
                       id={`${e.id}`}
                       onClick={showModalEdit}
+                      shape="circle"
+                      icon="edit"
                     />
                   }
                 >
+                  {e.compteRendu === null && (
+                    <p>
+                      <Alert
+                        message="Vous n'avez pas rédigé de compte-rendu"
+                        type="warning"
+                      />
+                    </p>
+                  )}
                   <p>Date : {new Date(e.date).toDateString()}</p>
                   <p>Créateur : {e.createur.name} </p>
                   <p>Salle : {e.lieu} </p>
@@ -194,13 +211,7 @@ const Reunion: React.FC = () => {
           </div>
         </Col>
       </Row>
-      <Button
-        style={{ marginLeft: "5%" }}
-        type="primary"
-        shape="circle"
-        icon="mail"
-        onClick={showModalMailSender}
-      />
+
       <ModalAddReunion
         visible={visibleModalAdd}
         setVisible={setVisibleModalAdd}
