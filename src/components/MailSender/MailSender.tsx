@@ -1,6 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {Button,Select,Input,Modal,DatePicker,TimePicker} from "antd";
+import { Redirect, useHistory } from "react-router-dom";
+import { url } from "../../utils/api";
+import axios from 'axios';
+import moment from 'moment';
+import { IProjet } from "../../interfaces/IProjet";
+import { ICollabo } from "../../interfaces/ICollabo";
+import { IOption } from "../../interfaces/IOption";
 
-const MailSender: React.FC = () => {
+interface Props {
+    visible : boolean;
+    setVisible : (value: boolean) => void;
+}
+
+const MailSender: React.FC<Props> = ({visible,setVisible}) => {
 
   const [status,setStatus] = useState("");
 
@@ -21,24 +34,33 @@ const MailSender: React.FC = () => {
       }
     };
     xhr.send(data);
-    console.log(form);
   }
 
+  const handleCancel = () => {
+    setVisible(false);
+}
+
   return (
-    <div>
-      <form
-        onSubmit={submitForm}
-        action="https://formspree.io/mwkkdlpb"
-        method="POST"
+  <div>
+      <Modal
+          title="Envoyer un rappel"
+          visible={visible}
+          onCancel={handleCancel}
+          footer={null}
       >
-        <label>Email:</label>
-        <input type="email" name="email" value="dfgdfg455@yopmail.com"/>
-        <label>Message:</label>
-        <input type="text" name="message" value="Rappel de réunion"/>
-        {status === "SUCCESS" ? <p>Thanks!</p> : <button>Submit</button>}
-        {status === "ERROR" && <p>Ooops! There was an error.</p>}
-      </form>
-    </div>
+        <form
+          onSubmit={submitForm}
+          action="https://formspree.io/mwkkdlpb"
+          method="POST"
+        >
+          <Input type="email" name="email" placeholder="email" />
+          <br/><br/>
+          <Input type="text" name="message" defaultValue="Rappel de réunion"/>
+          <br/><br/>
+          <Button htmlType="submit">Envoyer</Button>
+        </form>
+      </Modal>
+  </div>
   );
 };
 

@@ -11,11 +11,18 @@ import { IReunion } from "../../interfaces/IReunion";
 const Reunion: React.FC = () => {
   const { Option } = Select;
   const [visibleModalAdd,setVisibleModalAdd] = useState(false);
+  const [visibleModalMailSender,setVisibleModalMailSender] = useState(false);
   const showModalAdd = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setVisibleModalAdd(true);
   }
   const hideModalAdd = () => {
     setVisibleModalAdd(false);
+  }
+  const showModalMailSender = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    setVisibleModalMailSender(true);
+  }
+  const hideModalMailSender = () => {
+    setVisibleModalMailSender(false);
   }
   const [listeProjet, setListeProjet] = useState<IProjet[]>([]);
   const [reunionAVenir, setReunionAvenir] = useState<IReunion[]>([]);
@@ -103,9 +110,15 @@ const Reunion: React.FC = () => {
           </div>
         </Col>
       </Row>
+      <Button
+        style={{ marginLeft: "5%" }}
+        type="primary"
+        shape="circle"
+        icon="mail"
+        onClick={showModalMailSender}
+      />
       <ModalAddReunion visible={visibleModalAdd}  setVisible={setVisibleModalAdd}/>
-      <br/><br/><br/><br/><br/><br/>
-      <MailSender />
+      <MailSender visible={visibleModalMailSender}  setVisible={setVisibleModalMailSender} />
     </div>
   );
 };

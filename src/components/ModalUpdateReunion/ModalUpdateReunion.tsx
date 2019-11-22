@@ -7,7 +7,6 @@ import moment from 'moment';
 import { IProjet } from "../../interfaces/IProjet";
 import { ICollabo } from "../../interfaces/ICollabo";
 import { IOption } from "../../interfaces/IOption";
-import "./ModalAddReunion.css";
 
 interface Props {
     visible : boolean;

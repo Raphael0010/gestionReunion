@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { ICollabo } from "../../interfaces/ICollabo";
-import { Table, Popconfirm, Input } from "antd";
+import { Table, Popconfirm, Input, Col, Button, Modal } from "antd";
+import { url } from "../../utils/api";
+import axios from 'axios';
+import ModalAddCollabo from "../ModalAddCollabo/ModalAddCollabo";
 import "./GestionCollaborateurs.css";
 
 const GestionCollaborateurs: React.FC = () => {
@@ -10,7 +13,14 @@ const GestionCollaborateurs: React.FC = () => {
   const [dataSource, setDataSource] = useState<ICollabo[]>([]);
   const [dataSourceFilter, setDataSourceFilter] = useState<ICollabo[]>([]);
   const [filter, setFilter] = useState("");
+  const [visibleModalAdd,setVisibleModalAdd] = useState(false);
 
+  const showModalAdd = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    setVisibleModalAdd(true);
+  }
+  const hideModalAdd = () => {
+    setVisibleModalAdd(false);
+  }
   const onChangeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(event.target.value);
     if (filter.trim() === "") {
@@ -62,7 +72,10 @@ const GestionCollaborateurs: React.FC = () => {
   };
 
   const deleteCollabo = (key: any) => {
-    console.log("Je délete le :", key);
+    console.log(key);
+    axios.get(`${url}/collaborateurs/delete/`+key).then(e => {
+      console.log(e);
+    });
   };
 
   useEffect(() => {
@@ -77,6 +90,13 @@ const GestionCollaborateurs: React.FC = () => {
           placeholder="Rechercher..."
           onChange={onChangeFilter}
           value={filter}
+        />
+        <Button
+          style={{ marginLeft: "2%" }}
+          type="primary"
+          shape="circle"
+          icon="plus"
+          onClick={showModalAdd}
         />
       </div>
 
@@ -98,6 +118,7 @@ const GestionCollaborateurs: React.FC = () => {
           )}
         />
       </Table>
+      <ModalAddCollabo visible={visibleModalAdd}  setVisible={setVisibleModalAdd} />
     </div>
   );
 };
