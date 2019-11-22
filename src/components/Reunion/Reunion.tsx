@@ -1,22 +1,15 @@
-import React, { useState, useEffect }  from "react";
-import { Row, Col, Select, Card, Button } from "antd";
-import ModalAddReunion from "../ModalAddReunion/ModalAddReunion";
-import MailSender from "../MailSender/MailSender";
+import React, { useState, useEffect } from "react";
+import { Row, Col, Select, Card, Button, Icon } from "antd";
 import axios from "axios";
 import { url } from "../../utils/api";
 import { IProjet } from "../../interfaces/IProjet";
 import "./Reunion.css";
 import { IReunion } from "../../interfaces/IReunion";
+import ModalAddReunion from "../ModalAddReunion/ModalAddReunion";
 
 const Reunion: React.FC = () => {
   const { Option } = Select;
-  const [visibleModalAdd,setVisibleModalAdd] = useState(false);
-  const showModalAdd = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    setVisibleModalAdd(true);
-  }
-  const hideModalAdd = () => {
-    setVisibleModalAdd(false);
-  }
+  const [visibleModalAdd, setVisibleModalAdd] = useState(false);
   const [listeProjet, setListeProjet] = useState<IProjet[]>([]);
   const [reunionAVenir, setReunionAvenir] = useState<IReunion[]>([]);
   const [reunionPasse, setReunionPasse] = useState<IReunion[]>([]);
@@ -27,9 +20,64 @@ const Reunion: React.FC = () => {
     });
   };
 
+  const showModalAdd = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    setVisibleModalAdd(true);
+  };
+  const hideModalAdd = () => {
+    setVisibleModalAdd(false);
+  };
+
   const loadReunion = (id: number) => {
-    axios.get(`${url}/reunions/reunion/${id}`).then(e => {
-      console.log(e.data);
+    axios.get(`${url}/reunions/${id}`).then(e => {
+      const dataReuAVenir: IReunion[] = [];
+      const dataReuPasse: IReunion[] = [];
+      e.data.map((e: any) => {
+        if (new Date(e.date).getTime() > new Date().getTime()) {
+          dataReuAVenir.push({
+            id: e.id,
+            date: e.date,
+            createur: {
+              key: e.createur.id,
+              name: e.createur.nom + " " + e.createur.prenom,
+              job: e.createur.role.libelle
+            },
+            objectif: e.objectif,
+            compteRendu: e.compteRendu,
+            lieu: e.lieu,
+            projet: { id: e.projet.id, libelle: e.projet.libelle },
+            participant: e.participant.map((k: any) => {
+              return {
+                key: k.id,
+                name: k.nom + " " + k.prenom,
+                job: k.role.libelle
+              };
+            })
+          });
+        } else {
+          dataReuPasse.push({
+            id: e.id,
+            date: e.date,
+            createur: {
+              key: e.createur.id,
+              name: e.createur.nom + " " + e.createur.prenom,
+              job: e.createur.role.libelle
+            },
+            objectif: e.objectif,
+            compteRendu: e.compteRendu,
+            lieu: e.lieu,
+            projet: { id: e.projet.id, libelle: e.projet.libelle },
+            participant: e.participant.map((k: any) => {
+              return {
+                key: k.id,
+                name: k.nom + " " + k.prenom,
+                job: k.role.libelle
+              };
+            })
+          });
+        }
+      });
+      setReunionPasse(dataReuPasse);
+      setReunionAvenir(dataReuAVenir);
     });
   };
 
@@ -81,10 +129,23 @@ const Reunion: React.FC = () => {
             <h2 className="center">Réunion à venir</h2>
             {reunionAVenir &&
               reunionAVenir.map(e => (
-                <Card className="reunionCard" size="small" title="Réunion : ">
-                  <p>Date : ${e.date}</p>
-                  <p>Objectif : ${e.objectif}</p>
-                  <p>Participant : ${e.participant.map(u => u.name)}</p>
+                <Card
+                  className="reunionCard"
+                  size="small"
+                  title={`Réunion : ${e.objectif}`}
+                  key={`${e.id}`}
+                  extra={<Button shape="circle" icon="edit" />}
+                >
+                  {e.compteRendu === null && (
+                    <p>
+                      <Icon type="warning" /> Pas de compte rendu
+                    </p>
+                  )}
+                  <p>Date : {new Date(e.date).toDateString()}</p>
+                  <p>Créateur : {e.createur.name} </p>
+                  <p>Salle : {e.lieu} </p>
+                  <p>Projet : {e.projet.libelle} </p>
+                  <p>Participant : {e.participant.map(u => u.name + " ")}</p>
                 </Card>
               ))}
           </div>
@@ -94,18 +155,34 @@ const Reunion: React.FC = () => {
             <h2 className="center">Réunion passée</h2>
             {reunionPasse.length > 0 &&
               reunionPasse.map(e => (
-                <Card className="reunionCard" size="small" title="Réunion : ">
-                  <p>Date : ${e.date}</p>
-                  <p>Objectif : ${e.objectif}</p>
-                  <p>Participant : ${e.participant.map(u => u.name)}</p>
+                <Card
+                  className="reunionCard"
+                  size="small"
+                  title={`Réunion : ${e.objectif}`}
+                  key={`${e.id}`}
+                  extra={
+                    <Button
+                      type="primary"
+                      shape="circle"
+                      icon="edit"
+                      size="large"
+                    />
+                  }
+                >
+                  <p>Date : {new Date(e.date).toDateString()}</p>
+                  <p>Créateur : {e.createur.name} </p>
+                  <p>Salle : {e.lieu} </p>
+                  <p>Projet : {e.projet.libelle} </p>
+                  <p>Participant : {e.participant.map(u => u.name + " ")}</p>
                 </Card>
               ))}
           </div>
         </Col>
       </Row>
-      <ModalAddReunion visible={visibleModalAdd}  setVisible={setVisibleModalAdd}/>
-      <br/><br/><br/><br/><br/><br/>
-      <MailSender />
+      <ModalAddReunion
+        visible={visibleModalAdd}
+        setVisible={setVisibleModalAdd}
+      />
     </div>
   );
 };
