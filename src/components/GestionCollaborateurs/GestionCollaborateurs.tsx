@@ -13,14 +13,11 @@ const GestionCollaborateurs: React.FC = () => {
   const [dataSource, setDataSource] = useState<ICollabo[]>([]);
   const [dataSourceFilter, setDataSourceFilter] = useState<ICollabo[]>([]);
   const [filter, setFilter] = useState("");
-  const [visibleModalAdd,setVisibleModalAdd] = useState(false);
+  const [visibleModalAdd, setVisibleModalAdd] = useState(false);
 
   const showModalAdd = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setVisibleModalAdd(true);
-  }
-  const hideModalAdd = () => {
-    setVisibleModalAdd(false);
-  }
+  };
   const onChangeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(event.target.value);
     if (filter.trim() === "") {
@@ -51,14 +48,14 @@ const GestionCollaborateurs: React.FC = () => {
 
   const deleteCollabo = (key: any) => {
     console.log(key);
-    axios.get(`${url}/collaborateurs/delete/`+key).then(e => {
-      console.log(e);
+    axios.get(`${url}/collaborateurs/delete/` + key).then(e => {
+      loadData();
     });
   };
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [visibleModalAdd]);
 
   return (
     <div>
@@ -96,7 +93,10 @@ const GestionCollaborateurs: React.FC = () => {
           )}
         />
       </Table>
-      <ModalAddCollabo visible={visibleModalAdd}  setVisible={setVisibleModalAdd} />
+      <ModalAddCollabo
+        visible={visibleModalAdd}
+        setVisible={setVisibleModalAdd}
+      />
     </div>
   );
 };
