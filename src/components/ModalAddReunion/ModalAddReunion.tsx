@@ -1,8 +1,12 @@
-import React, { useState } from "react";
-import {Button,Select,Input,Modal,DatePicker} from "antd";
+import React, { useState, useEffect } from "react";
+import {Button,Select,Input,Modal,DatePicker,TimePicker} from "antd";
 import { Redirect, useHistory } from "react-router-dom";
+import { url } from "../../utils/api";
 import axios from 'axios';
 import moment from 'moment';
+import { IProjet } from "../../interfaces/IProjet";
+import { ICollabo } from "../../interfaces/ICollabo";
+import { IOption } from "../../interfaces/IOption";
 import "./ModalAddReunion.css";
 
 interface Props {
@@ -15,44 +19,75 @@ const ModalAddReunion: React.FC<Props> = ({visible,setVisible}) => {
     const { Option } = Select;
 
     const [nom,setNom] = useState("");
+    const [projet,setProjet] = useState(0);
+    const [listeProjet, setListeProjet] = useState<IProjet[]>([]);
+    const [listeCollabo, setListeCollabo] = useState<ICollabo[]>([]);
     const [participants,setParticipants] = useState([]);
     const [date,setDate] = useState(Date);
     const [lieu,setLieu] = useState("");
-    const [objectif,setObjectif] = useState("");
+    const [optionCollabo, setOptionCollabo] = useState<IOption[]>([]);
+    const [listStrCollabo,setListStrCollabo] = useState("");
+    const [time,setTime] = useState("");
+
+    const [idCreateur] = useState(1);
 
 
     const onChangeNom = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNom(event.target.value);
     }
-    const onChangeParticipants = (event: React.ChangeEvent<HTMLInputElement>) => {
-        //setParticipants(event.target.value);
+    const onChangeProjet = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setProjet(parseInt(String(event)));
+    }
+    const onChangeParticipants = (event: any) => {
+        var tab = Array(event);
+        setParticipants(tab[0]);
     }
     const onChangeDate = (date: moment.Moment | null, dateString: string) => {
-        console.log(dateString);
-        //setDate(event.target.value);
+        setDate(dateString);
+    }
+    const onChangeTime = (time: moment.Moment, timeString: string) => {
+        setTime(timeString);
     }
     const onChangeLieu = (event: React.ChangeEvent<HTMLInputElement>) => {
-        //setLieu(event.target.value);
+        setLieu(event.target.value);
     }
-    const onChangeObjectif = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        //setObjectif(event.target.value);
+    const onSetOptionCollabo = (o : IOption) => {
+        let optionCollab = optionCollabo;
+        optionCollab.push(o);
+        setOptionCollabo(optionCollab);
+        console.log(optionCollabo);
     }
 
+    const loadProjet = () => {
+        axios.get(`${url}/projets`).then(e => {
+          setListeProjet(e.data);
+          console.log(e);
+        });
+      };
+
+    const loadCollabo = () => {
+        axios.get(`${url}/collaborateurs`).then(e => {
+            e.data.map((e:any) => {
+                onSetOptionCollabo({key:e.id, nom: e.name});
+            });
+        });
+      };
+   
+    
     const createReunion = () => {
-        /*axios.post('api/login', { nom, participants, date, lieu, objectif })
-        .then((result) => {
-        
-        }
-        );*/
+        var datetime = new Date(date +"T"+ time);
+        axios.post(`${url}/reunions`,{date:datetime,lieu:lieu,objectif:nom,id_createur:idCreateur,projet:projet}).then(e => {
+            console.log(e);
+        });
     }
     const handleCancel = () => {
         setVisible(false);
     }
 
-    const children = [];
-    for (let i = 10; i < 36; i++) {
-        children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
-    }
+    useEffect(() => {
+        loadProjet();
+        loadCollabo();
+    }, []);
 
     return (
     <div>
@@ -65,19 +100,31 @@ const ModalAddReunion: React.FC<Props> = ({visible,setVisible}) => {
             <Input placeholder="Nom" onChange={onChangeNom} />
             <br/><br/>
             <Select
+                placeholder="Projet"
+                style={{ width: '100%' }}
+                onChange={onChangeProjet}
+              >
+                {listeProjet.map(e => {
+                  return <Option value={e.id}>{e.libelle}</Option>;
+                })}
+            </Select>
+            <br/><br/>
+            <Select
                 mode="multiple"
                 style={{ width: '100%' }}
                 placeholder="Participants"
                 onChange={onChangeParticipants}
             >
-                {children}
+                {optionCollabo.map((e)=> {
+                    return <Option key={e.key}>{e.nom}</Option>
+                })}
             </Select>
             <br/><br/>
-            <DatePicker style={{ width: '100%' }} onChange={onChangeDate} />
+            <DatePicker placeholder="Date" style={{ width: '100%' }} onChange={onChangeDate} />
+            <br/><br/>
+            <TimePicker placeholder="Heure" onChange={onChangeTime} style={{ width: '100%' }} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
             <br/><br/>
             <Input placeholder="Lieu" onChange={onChangeLieu} />
-            <br/><br/>
-            <TextArea rows={4} onChange={onChangeObjectif} />
         </Modal>
     </div>
     );

@@ -1,6 +1,7 @@
-import React, { useState }  from "react";
+import React, { useState, useEffect }  from "react";
 import { Row, Col, Select, Card, Button } from "antd";
 import ModalAddReunion from "../ModalAddReunion/ModalAddReunion";
+import MailSender from "../MailSender/MailSender";
 import axios from "axios";
 import { url } from "../../utils/api";
 import { IProjet } from "../../interfaces/IProjet";
@@ -81,7 +82,9 @@ const Reunion: React.FC = () => {
           </div>
         </Col>
       </Row>
-      <ModalAddReunion visible={visibleModalAdd} setVisible={hideModalAdd} />
+      <ModalAddReunion visible={visibleModalAdd}  setVisible={setVisibleModalAdd}/>
+      <br/><br/><br/><br/><br/><br/>
+      <MailSender />
     </div>
   );
 };
