@@ -45,7 +45,7 @@ const MailSender: React.FC<Props> = ({ visible, setVisible }) => {
           action="https://formspree.io/mwkkdlpb"
           method="POST"
         >
-          <Input type="email" name="email" placeholder="email" />
+          <Input type="email" name="email" placeholder="Email" />
           <br />
           <br />
           <Input type="text" name="message" defaultValue="Rappel de réunion" />

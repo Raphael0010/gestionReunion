@@ -49,12 +49,14 @@ const App: React.FC = () => {
         </Switch>
       </Content>
       <Footer className="footer">
-        {connected && (
-          <p className="footerText">
-            <Divider />
-            Raphael M, Louis B, Arthur P, Benjamin P, Yoann PJ
-          </p>
-        )}
+        <div>
+          {connected && (
+            <p className="footerText">
+              <Divider />
+              Raphael M, Louis B, Arthur P, Benjamin P, Yoann PJ
+            </p>
+          )}
+        </div>
       </Footer>
     </Router>
   );
